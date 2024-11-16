@@ -81,13 +81,13 @@ void func(char* fileName)
     char* sFileName = shortFileName(fileName);
 
     if (fileSize == (off_t)-1) {
-        printf("%s %u %s %s %7s %s %s\n", mask, buf.st_nlink, userName, groupName, empty, date, sfileName);
+        printf("%s %u %s %s %7s %s %s\n", mask, buf.st_nlink, userName, groupName, empty, date, sFileName);
     }
     else  {
 #if defined(_LP64) || _FILE_OFFSET_BITS == 32
-        printf("%s %u %s %s %7ld %s %s\n", mask, buf.st_nlink, userName, groupName, fileSize, date, sfileName);
+        printf("%s %u %s %s %7ld %s %s\n", mask, buf.st_nlink, userName, groupName, fileSize, date, sFileName);
 #elif _FILE_OFFSET_BITS == 64
-        printf("%s %u %s %s %lld %s %s\n", mask, buf.st_nlink, userName, groupName, fileSize, date, sfileName);
+        printf("%s %u %s %s %lld %s %s\n", mask, buf.st_nlink, userName, groupName, fileSize, date, sFileName);
 #endif
     }
 }

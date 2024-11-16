@@ -19,8 +19,16 @@ char* shortFileName(char* fileName)
     return name;
 }
 
-void func(struct stat buf)
+void func(char* fileName)
 {
+    struct stat buf;
+
+    if (stat(fileName, &buf) == -1) {
+        perror("stat was broken");
+        return;
+    }
+
+
     char mask[] = "?---___---";
     mask[0] = S_ISDIR(buf.st_mode) ? 'd' : (S_ISREG(buf.st_mode) ? '-' : '?');
 
@@ -70,46 +78,29 @@ void func(struct stat buf)
     date[16] = '\0'; // cut seconds and year
     date += 4; // skip day of week
 
-    char* fileName = shortFileName(argv[i]);
+    char* sFileName = shortFileName(argv[i]);
 
-    if (fileSize == (off_t)-1)
-    {
-        printf("%s %u %s %s %7s %s %s\n", mask, buf.st_nlink, userName, groupName, empty, date, fileName);
+    if (fileSize == (off_t)-1) {
+        printf("%s %u %s %s %7s %s %s\n", mask, buf.st_nlink, userName, groupName, empty, date, sfileName);
     }
-    else 
-    {
+    else  {
 #if defined(_LP64) || _FILE_OFFSET_BITS == 32
-        printf("%s %u %s %s %7ld %s %s\n", mask, buf.st_nlink, userName, groupName, fileSize, date, fileName);
+        printf("%s %u %s %s %7ld %s %s\n", mask, buf.st_nlink, userName, groupName, fileSize, date, sfileName);
 #elif _FILE_OFFSET_BITS == 64
-        printf("%s %u %s %s %lld %s %s\n", mask, buf.st_nlink, userName, groupName, fileSize, date, fileName);
+        printf("%s %u %s %s %lld %s %s\n", mask, buf.st_nlink, userName, groupName, fileSize, date, sfileName);
 #endif
     }
 }
 
 int main(int argc, char** argv)
 {
-    struct stat buf;
-    if (argc < 2)
-    {
-        if (stat(".", &buf) == -1)
-        {
-            perror("stat was broken");
-            exit(EXIT_FAILURE);
-        }
-
-        func(buf);
+    
+    if (argc < 2) {
+        func(".");
     }
-    else 
-    {
-        for (int i = 1; i < argc; i++)
-        {
-            if (stat(argv[i], &buf) == -1)
-            {
-                perror("stat was broken");
-                continue;
-            }
-
-            func(buf);
+    else {
+        for (int i = 1; i < argc; i++) {
+            func(argv[i]);
         }
     }
 }

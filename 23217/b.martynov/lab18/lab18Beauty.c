@@ -78,7 +78,7 @@ void func(char* fileName)
     date[16] = '\0'; // cut seconds and year
     date += 4; // skip day of week
 
-    char* sFileName = shortFileName(argv[i]);
+    char* sFileName = shortFileName(fileName);
 
     if (fileSize == (off_t)-1) {
         printf("%s %u %s %s %7s %s %s\n", mask, buf.st_nlink, userName, groupName, empty, date, sfileName);
